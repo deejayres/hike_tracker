@@ -1,0 +1,67 @@
+import { useState, useRef } from 'react'
+import TrailMap from './TrailMap'
+import TrailList from './TrailList'
+import TrailDetail from './TrailDetail'
+import { useTrails } from './useTrails'
+import { parseGpx } from './parseGpx'
+
+export default function App() {
+  const { trails, toggleComplete, attachGpx } = useTrails()
+  const [selectedId, setSelectedId] = useState<string | null>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const pendingIdRef = useRef<string | null>(null)
+
+  const selectedTrail = trails.find(t => t.id === selectedId) ?? null
+
+  function handleAttachGpx(id: string) {
+    pendingIdRef.current = id
+    fileInputRef.current?.click()
+  }
+
+  function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    const id = pendingIdRef.current
+    if (!file || !id) return
+    const reader = new FileReader()
+    reader.onload = ev => {
+      const text = ev.target?.result as string
+      attachGpx(id, parseGpx(text))
+    }
+    reader.readAsText(file)
+    e.target.value = ''
+  }
+
+  return (
+    <div className="app">
+      <aside className="sidebar">
+        <TrailList
+          trails={trails}
+          selectedId={selectedId}
+          onSelect={setSelectedId}
+          onToggle={toggleComplete}
+        />
+        {selectedTrail && (
+          <TrailDetail
+            trail={selectedTrail}
+            onToggle={toggleComplete}
+            onAttachGpx={handleAttachGpx}
+          />
+        )}
+      </aside>
+      <main className="map-area">
+        <TrailMap
+          trails={trails}
+          selectedId={selectedId}
+          onSelect={setSelectedId}
+        />
+      </main>
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept=".gpx"
+        style={{ display: 'none' }}
+        onChange={handleFileChange}
+      />
+    </div>
+  )
+}

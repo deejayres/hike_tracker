@@ -1,1 +1,0 @@
-# hike_tracker
