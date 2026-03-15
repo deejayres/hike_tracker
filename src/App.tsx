@@ -2,11 +2,12 @@ import { useState, useRef } from 'react'
 import TrailMap from './TrailMap'
 import TrailList from './TrailList'
 import TrailDetail from './TrailDetail'
+import AuthGate from './AuthGate'
 import { useTrails } from './useTrails'
 import { parseGpx } from './parseGpx'
 
-export default function App() {
-  const { trails, toggleComplete, attachGpx } = useTrails()
+function AppInner() {
+  const { trails, syncing, toggleComplete, attachGpx } = useTrails()
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const pendingIdRef = useRef<string | null>(null)
@@ -30,6 +31,8 @@ export default function App() {
     reader.readAsText(file)
     e.target.value = ''
   }
+
+  if (syncing) return <div className="sync-loading">Loading trails…</div>
 
   return (
     <div className="app">
@@ -63,5 +66,13 @@ export default function App() {
         onChange={handleFileChange}
       />
     </div>
+  )
+}
+
+export default function App() {
+  return (
+    <AuthGate>
+      <AppInner />
+    </AuthGate>
   )
 }
