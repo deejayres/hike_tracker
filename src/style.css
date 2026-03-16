@@ -571,6 +571,7 @@ body {
   .stats-bar {
     gap: 16px;
     padding: 8px 12px;
+    padding-top: calc(env(safe-area-inset-top) + 8px);
   }
 
   .app-body {
