@@ -8,10 +8,10 @@
   "scope": "/hike_tracker/",
   "icons": [
     {
-      "src": "/hike_tracker/favicon.svg",
+      "src": "/hike_tracker/icon.png",
       "sizes": "any",
-      "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "type": "image/png",
+      "purpose": "any"
     }
   ],
   "share_target": {

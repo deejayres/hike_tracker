@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180">
+  <!-- Background circle -->
+  <circle cx="90" cy="90" r="90" fill="#1a3a2a"/>
+
+  <!-- Sky -->
+  <clipPath id="circle-clip">
+    <circle cx="90" cy="90" r="82"/>
+  </clipPath>
+  <g clip-path="url(#circle-clip)">
+    <!-- Sky -->
+    <rect x="8" y="8" width="164" height="164" fill="#3a6b9e"/>
+
+    <!-- Sun -->
+    <circle cx="130" cy="42" r="14" fill="#f5c842"/>
+
+    <!-- Far mountains (Blue Ridge haze) -->
+    <ellipse cx="50" cy="85" rx="55" ry="28" fill="#6b8bb5"/>
+    <ellipse cx="110" cy="78" rx="50" ry="24" fill="#7a9abf"/>
+    <ellipse cx="145" cy="88" rx="40" ry="20" fill="#8aaac8"/>
+
+    <!-- Near mountain ridge -->
+    <polygon points="0,105 35,68 65,88 90,60 120,82 155,65 180,85 180,115 0,115" fill="#4a6741"/>
+
+    <!-- Green hills foreground -->
+    <ellipse cx="40" cy="130" rx="60" ry="35" fill="#3d7a3a"/>
+    <ellipse cx="140" cy="135" rx="60" ry="30" fill="#4a8a45"/>
+    <rect x="0" y="130" width="180" height="50" fill="#3d7a3a"/>
+
+    <!-- Trail path -->
+    <path d="M75,180 Q82,155 86,135 Q88,120 90,108" stroke="#c8a850" stroke-width="9" fill="none" stroke-linecap="round"/>
+    <path d="M105,180 Q98,155 94,135 Q92,120 90,108" stroke="#c8a850" stroke-width="9" fill="none" stroke-linecap="round"/>
+    <polygon points="75,180 105,180 94,135 86,135" fill="#c8a850"/>
+
+    <!-- Hiker silhouette -->
+    <!-- Body -->
+    <ellipse cx="90" cy="100" rx="7" ry="9" fill="#1a1a1a"/>
+    <!-- Head -->
+    <circle cx="90" cy="88" r="6" fill="#1a1a1a"/>
+    <!-- Pack bump -->
+    <ellipse cx="96" cy="99" rx="4" ry="5" fill="#1a1a1a"/>
+    <!-- Left leg -->
+    <line x1="88" y1="109" x2="83" y2="122" stroke="#1a1a1a" stroke-width="4" stroke-linecap="round"/>
+    <!-- Right leg -->
+    <line x1="92" y1="109" x2="97" y2="120" stroke="#1a1a1a" stroke-width="4" stroke-linecap="round"/>
+    <!-- Left arm / pole -->
+    <line x1="85" y1="98" x2="75" y2="118" stroke="#1a1a1a" stroke-width="3" stroke-linecap="round"/>
+    <!-- Right arm -->
+    <line x1="95" y1="98" x2="100" y2="107" stroke="#1a1a1a" stroke-width="3" stroke-linecap="round"/>
+
+    <!-- Trees left -->
+    <polygon points="18,105 25,80 32,105" fill="#1f4a1f"/>
+    <polygon points="28,108 36,78 44,108" fill="#1f4a1f"/>
+    <!-- Trees right -->
+    <polygon points="138,100 145,74 152,100" fill="#1f4a1f"/>
+    <polygon points="150,104 157,80 164,104" fill="#1f4a1f"/>
+  </g>
+
+  <!-- Outer ring -->
+  <circle cx="90" cy="90" r="82" fill="none" stroke="#c8a850" stroke-width="5"/>
+  <circle cx="90" cy="90" r="87" fill="none" stroke="#1a3a2a" stroke-width="3"/>
+
+  <!-- Text on arc -->
+  <path id="top-arc" d="M 20,90 A 70,70 0 0,1 160,90" fill="none"/>
+  <path id="bottom-arc" d="M 25,95 A 68,68 0 0,0 155,95" fill="none"/>
+  <text font-family="Georgia, serif" font-size="13" font-weight="bold" fill="#c8a850" letter-spacing="2">
+    <textPath href="#top-arc" startOffset="12%">PISGAH 400</textPath>
+  </text>
+  <text font-family="Georgia, serif" font-size="11" font-weight="bold" fill="#c8a850" letter-spacing="1.5">
+    <textPath href="#bottom-arc" startOffset="10%">MILE CHALLENGE</textPath>
+  </text>
+</svg>
