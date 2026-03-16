@@ -116,6 +116,31 @@ body {
   font-weight: 600;
 }
 
+.trail-search {
+  padding: 8px 12px;
+  border-bottom: 1px solid #2a2a2a;
+  flex-shrink: 0;
+}
+
+.trail-search input {
+  width: 100%;
+  background: #1a1a1a;
+  border: 1px solid #3a3a3a;
+  border-radius: 6px;
+  color: #e5e5e5;
+  padding: 6px 10px;
+  font-size: 0.85rem;
+  outline: none;
+}
+
+.trail-search input:focus { border-color: #22c55e; }
+
+.trail-no-results {
+  padding: 16px 12px;
+  font-size: 0.85rem;
+  color: #555;
+}
+
 .trail-list ul {
   list-style: none;
   overflow-y: auto;

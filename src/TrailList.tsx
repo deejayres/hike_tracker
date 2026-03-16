@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import type { Trail } from './types'
 
 interface Props {
@@ -8,7 +9,15 @@ interface Props {
 }
 
 export default function TrailList({ trails, selectedId, onSelect, onToggle }: Props) {
+  const [search, setSearch] = useState('')
   const completed = trails.filter(t => t.completed).length
+
+  const filtered = search.trim()
+    ? trails.filter(t =>
+        t.name.toLowerCase().includes(search.toLowerCase()) ||
+        t.number.toLowerCase().includes(search.toLowerCase())
+      )
+    : trails
 
   return (
     <div className="trail-list">
@@ -17,8 +26,17 @@ export default function TrailList({ trails, selectedId, onSelect, onToggle }: Pr
         <span className="progress">{completed} / {trails.length}</span>
       </div>
 
+      <div className="trail-search">
+        <input
+          type="search"
+          placeholder="Search trails…"
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+        />
+      </div>
+
       <ul>
-        {trails.map(trail => (
+        {filtered.map(trail => (
           <li
             key={trail.id}
             className={[
@@ -40,6 +58,9 @@ export default function TrailList({ trails, selectedId, onSelect, onToggle }: Pr
             {trail.gpxTrack && <span className="gpx-indicator" title="GPX attached">📍</span>}
           </li>
         ))}
+        {filtered.length === 0 && (
+          <li className="trail-no-results">No trails match "{search}"</li>
+        )}
       </ul>
     </div>
   )
