@@ -381,3 +381,229 @@ body {
   color: #666;
   font-size: 0.9rem;
 }
+
+/* Tab bar (mobile only) */
+.tab-bar {
+  display: none;
+}
+
+/* Detail back button */
+.detail-back {
+  background: none;
+  border: none;
+  color: #22c55e;
+  font-size: 0.85rem;
+  cursor: pointer;
+  padding: 0 0 4px;
+  align-self: flex-start;
+}
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.modal {
+  background: #242424;
+  border: 1px solid #333;
+  border-radius: 10px;
+  padding: 24px;
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.modal h2 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #f0f0f0;
+}
+
+.modal-track-info {
+  background: #1a1a1a;
+  border-radius: 6px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.modal-track-name {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #e5e5e5;
+}
+
+.modal-stats {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.modal-stats span {
+  font-size: 0.8rem;
+  color: #888;
+}
+
+.modal-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.modal-field label {
+  font-size: 0.75rem;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.modal-field input[type="text"] {
+  background: #1a1a1a;
+  border: 1px solid #444;
+  border-radius: 4px;
+  color: #e5e5e5;
+  padding: 7px 10px;
+  font-size: 0.85rem;
+  outline: none;
+}
+
+.modal-field input:focus { border-color: #22c55e; }
+
+.modal-field select {
+  background: #1a1a1a;
+  border: 1px solid #444;
+  border-radius: 4px;
+  color: #e5e5e5;
+  font-size: 0.85rem;
+  padding: 4px;
+  outline: none;
+}
+
+.modal-field select option { padding: 4px; }
+
+.modal-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  color: #aaa;
+  cursor: pointer;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.modal-cancel {
+  background: none;
+  border: 1px solid #444;
+  color: #aaa;
+  padding: 7px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.modal-confirm {
+  background: #22c55e;
+  border: none;
+  color: #000;
+  padding: 7px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.modal-confirm:disabled { opacity: 0.4; cursor: default; }
+
+/* ── Mobile ───────────────────────────────────── */
+@media (max-width: 768px) {
+  body { height: 100dvh; }
+
+  .app { height: 100dvh; }
+
+  .stats-bar {
+    gap: 16px;
+    padding: 8px 12px;
+  }
+
+  .app-body {
+    position: relative;
+    flex: 1;
+    overflow: hidden;
+  }
+
+  /* On mobile, sidebar and map each take full space;
+     show only the active tab */
+  .sidebar {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    border-right: none;
+    z-index: 1;
+    transition: transform 0.25s ease;
+  }
+
+  .map-area {
+    position: absolute;
+    inset: 0;
+  }
+
+  /* tab-list: show sidebar, hide map */
+  .tab-list .sidebar  { transform: translateX(0); }
+  .tab-list .map-area { visibility: hidden; }
+
+  /* tab-map: hide sidebar, show map */
+  .tab-map .sidebar  { transform: translateX(-100%); }
+  .tab-map .map-area { visibility: visible; }
+
+  /* Tab bar */
+  .tab-bar {
+    display: flex;
+    flex-shrink: 0;
+    background: #1e1e1e;
+    border-top: 1px solid #333;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .tab-bar button {
+    flex: 1;
+    background: none;
+    border: none;
+    color: #666;
+    padding: 10px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+  }
+
+  .tab-bar button.active { color: #22c55e; }
+
+  .tab-icon { font-size: 1.2rem; }
+  .tab-label { font-size: 0.7rem; }
+
+  /* Trail detail full-screen on mobile */
+  .trail-detail {
+    height: 100%;
+    overflow-y: auto;
+    border-top: none;
+  }
+
+  /* Tile switcher: move up to avoid tab bar overlap */
+  .tile-switcher { bottom: 12px; }
+}

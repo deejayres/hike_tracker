@@ -5,6 +5,7 @@ interface Props {
   trail: Trail
   onToggle: (id: string) => void
   onAttachGpx: (id: string) => void
+  onBack?: () => void
 }
 
 interface StatProps {
@@ -21,11 +22,14 @@ function Stat({ label, value }: StatProps) {
   )
 }
 
-export default function TrailDetail({ trail, onToggle, onAttachGpx }: Props) {
+export default function TrailDetail({ trail, onToggle, onAttachGpx, onBack }: Props) {
   const gpx = trail.gpxTrack
 
   return (
     <div className="trail-detail">
+      {onBack && (
+        <button className="detail-back" onClick={onBack}>← Trails</button>
+      )}
       <div className="detail-header">
         <span className="detail-number">{trail.number}</span>
         <h3 className="detail-name">{trail.name}</h3>

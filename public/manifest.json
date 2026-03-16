@@ -1,0 +1,30 @@
+{
+  "name": "Pisgah 400 Tracker",
+  "short_name": "Pisgah 400",
+  "display": "standalone",
+  "background_color": "#1a1a1a",
+  "theme_color": "#1a1a1a",
+  "start_url": "/hike_tracker/",
+  "scope": "/hike_tracker/",
+  "icons": [
+    {
+      "src": "/hike_tracker/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "share_target": {
+    "action": "/hike_tracker/share-target",
+    "method": "POST",
+    "enctype": "multipart/form-data",
+    "params": {
+      "files": [
+        {
+          "name": "gpx",
+          "accept": ["application/gpx+xml", ".gpx", "application/octet-stream"]
+        }
+      ]
+    }
+  }
+}
