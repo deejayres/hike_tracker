@@ -1,17 +1,5 @@
 import type { GpxTrack } from './types'
-
-const R = 3958.8 // Earth radius in miles
-
-function toRad(deg: number) { return (deg * Math.PI) / 180 }
-
-function haversineDistance(a: [number, number], b: [number, number]): number {
-  const dLat = toRad(b[0] - a[0])
-  const dLon = toRad(b[1] - a[1])
-  const sinLat = Math.sin(dLat / 2)
-  const sinLon = Math.sin(dLon / 2)
-  const c = sinLat * sinLat + Math.cos(toRad(a[0])) * Math.cos(toRad(b[0])) * sinLon * sinLon
-  return 2 * R * Math.asin(Math.sqrt(c))
-}
+import { segmentDistance } from './geo'
 
 // getElementsByTagName ignores XML namespaces; querySelector does not
 function getElements(doc: Document, tag: string): Element[] {
@@ -47,10 +35,7 @@ export function parseGpx(xmlText: string): GpxTrack {
       ? Math.round((new Date(lastTime).getTime() - new Date(firstTime).getTime()) / 1000)
       : undefined
 
-  let distanceMiles = 0
-  for (let i = 1; i < points.length; i++) {
-    distanceMiles += haversineDistance(points[i - 1], points[i])
-  }
+  const distanceMiles = segmentDistance(points)
 
   const eles = trkpts.map(pt => parseFloat(getText(pt, 'ele') ?? 'NaN'))
   let elevationGainFt = 0

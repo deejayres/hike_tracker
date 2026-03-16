@@ -147,6 +147,7 @@ const TRAILS = [
 // trailNumber -> OSM name to match against
 const ALIASES = {
   '139': 'Greens Lick Trail',
+  '138': 'Bennett Gap Trail',
 }
 
 function normalize(name) {
@@ -166,9 +167,10 @@ function matchTrail(osmName) {
   let bestScore = 0
 
   for (const [number, name] of TRAILS) {
-    // check alias first
-    if (ALIASES[number] && normalize(ALIASES[number]) === osmNorm) {
-      return { number, name, score: 100 }
+    if (ALIASES[number]) {
+      // aliased trails only match their alias — no fuzzy fallback
+      if (normalize(ALIASES[number]) === osmNorm) return { number, name, score: 100 }
+      continue
     }
     const trailNorm = normalize(name)
     // exact match after normalization

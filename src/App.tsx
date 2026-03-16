@@ -2,6 +2,7 @@ import { useState, useRef } from 'react'
 import TrailMap from './TrailMap'
 import TrailList from './TrailList'
 import TrailDetail from './TrailDetail'
+import StatsBar from './StatsBar'
 import AuthGate from './AuthGate'
 import { useTrails } from './useTrails'
 import { parseGpx } from './parseGpx'
@@ -36,6 +37,8 @@ function AppInner() {
 
   return (
     <div className="app">
+      <StatsBar trails={trails} />
+      <div className="app-body">
       <aside className="sidebar">
         <TrailList
           trails={trails}
@@ -58,6 +61,7 @@ function AppInner() {
           onSelect={setSelectedId}
         />
       </main>
+      </div>
       <input
         ref={fileInputRef}
         type="file"
