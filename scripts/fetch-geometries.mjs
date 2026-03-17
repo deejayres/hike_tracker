@@ -148,6 +148,7 @@ const TRAILS = [
 const ALIASES = {
   '139': 'Greens Lick Trail',
   '138': 'Bennett Gap Trail',
+  '320': 'Slate Rock Creek Trail',
 }
 
 function normalize(name) {
