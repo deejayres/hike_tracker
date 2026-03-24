@@ -155,6 +155,7 @@ const ALIASES = {
   '340': 'Cove Creek Trail',
   '116': 'Long Branch Trail',
   '609': 'Seniard Ridge Trail',
+  '665': 'Boyd Branch Trail',
 }
 
 function normalize(name) {
