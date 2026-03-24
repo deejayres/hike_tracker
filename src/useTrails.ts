@@ -49,8 +49,10 @@ export function useTrails() {
     })
   }, [])
 
-  function updateTrail(id: string, patch: Partial<Trail>) {
+  function updateTrail(id: string, patchFn: (trail: Trail) => Partial<Trail>) {
     setTrails(prev => {
+      const trail = prev.find(t => t.id === id)!
+      const patch = patchFn(trail)
       const next = prev.map(t => t.id === id ? { ...t, ...patch } : t)
       const updated = next.find(t => t.id === id)!
       upsertTrail(updated)
@@ -59,26 +61,26 @@ export function useTrails() {
   }
 
   function toggleComplete(id: string) {
-    const trail = trails.find(t => t.id === id)!
-    const nowCompleted = !trail.completed
-    updateTrail(id, {
-      completed: nowCompleted,
-      completedDate: nowCompleted
-        ? (trail.gpxTrack?.date ?? new Date().toISOString().split('T')[0])
-        : undefined,
+    updateTrail(id, trail => {
+      const nowCompleted = !trail.completed
+      return {
+        completed: nowCompleted,
+        completedDate: nowCompleted
+          ? (trail.gpxTrack?.date ?? new Date().toISOString().split('T')[0])
+          : undefined,
+      }
     })
   }
 
   function attachGpx(id: string, track: GpxTrack) {
-    const trail = trails.find(t => t.id === id)!
-    updateTrail(id, {
+    updateTrail(id, trail => ({
       gpxTrack: track,
       completedDate: trail.completed && track.date ? track.date : trail.completedDate,
-    })
+    }))
   }
 
   function removeGpx(id: string) {
-    updateTrail(id, { gpxTrack: undefined })
+    updateTrail(id, () => ({ gpxTrack: undefined }))
   }
 
   function addTrail(name: string) {
