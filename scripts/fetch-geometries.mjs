@@ -151,8 +151,9 @@ const ALIASES = {
   '320': 'Slate Rock Creek Trail',
   '288': 'Andy Cove Trail',
   '322': 'Turkey Pen Gap Trail',
-  '611': 'Yellow Gap Trail',
+  '611': 'Yellow Gap',
   '340': 'Cove Creek Trail',
+  '116': 'Long Branch Trail',
 }
 
 function normalize(name) {
@@ -173,8 +174,8 @@ function matchTrail(osmName) {
 
   for (const [number, name] of TRAILS) {
     if (ALIASES[number]) {
-      // aliased trails only match their alias — no fuzzy fallback
-      if (normalize(ALIASES[number]) === osmNorm) return { number, name, score: 100 }
+      // aliased trails only match their alias — exact case-insensitive, no normalization
+      if (ALIASES[number].toLowerCase() === osmName.toLowerCase()) return { number, name, score: 100 }
       continue
     }
     const trailNorm = normalize(name)
