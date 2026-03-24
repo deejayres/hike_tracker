@@ -1,5 +1,16 @@
 import type { Trail } from './types'
 import { formatDate, formatDuration } from './formatters'
+import { segmentDistance } from './geo'
+import geometries from './trailGeometries.json'
+
+const GEO = geometries as unknown as Record<string, [number, number][][]>
+
+function osmMiles(trailId: string): number | null {
+  const segs = GEO[trailId]
+  if (!segs) return null
+  const miles = segs.reduce((sum, seg) => sum + segmentDistance(seg), 0)
+  return miles > 0 ? miles : null
+}
 
 interface Props {
   trail: Trail
@@ -60,9 +71,16 @@ export default function TrailDetail({ trail, onToggle, onAttachGpx, onBack }: Pr
             <Stat label="Elevation gain" value={`${gpx.elevationGainFt.toLocaleString()} ft`} />
           )}
         </div>
-      ) : (
-        <p className="no-gpx">No GPX attached</p>
-      )}
+      ) : (() => {
+        const miles = osmMiles(trail.id)
+        return miles != null ? (
+          <div className="stats">
+            <Stat label="Distance (OSM)" value={`${miles.toFixed(1)} mi`} />
+          </div>
+        ) : (
+          <p className="no-gpx">No GPX attached</p>
+        )
+      })()}
 
       <button className="attach-gpx-btn" onClick={() => onAttachGpx(trail.id)}>
         {gpx ? 'Replace GPX' : 'Attach GPX'}
