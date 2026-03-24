@@ -16,6 +16,7 @@ interface Props {
   trail: Trail
   onToggle: (id: string) => void
   onAttachGpx: (id: string) => void
+  onRemoveGpx: (id: string) => void
   onBack?: () => void
 }
 
@@ -33,7 +34,7 @@ function Stat({ label, value }: StatProps) {
   )
 }
 
-export default function TrailDetail({ trail, onToggle, onAttachGpx, onBack }: Props) {
+export default function TrailDetail({ trail, onToggle, onAttachGpx, onRemoveGpx, onBack }: Props) {
   const gpx = trail.gpxTrack
 
   return (
@@ -82,9 +83,16 @@ export default function TrailDetail({ trail, onToggle, onAttachGpx, onBack }: Pr
         )
       })()}
 
-      <button className="attach-gpx-btn" onClick={() => onAttachGpx(trail.id)}>
-        {gpx ? 'Replace GPX' : 'Attach GPX'}
-      </button>
+      <div className="detail-gpx-actions">
+        <button className="attach-gpx-btn" onClick={() => onAttachGpx(trail.id)}>
+          {gpx ? 'Replace GPX' : 'Attach GPX'}
+        </button>
+        {gpx && (
+          <button className="remove-gpx-btn" onClick={() => onRemoveGpx(trail.id)}>
+            Remove GPX
+          </button>
+        )}
+      </div>
     </div>
   )
 }

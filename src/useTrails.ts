@@ -77,6 +77,10 @@ export function useTrails() {
     })
   }
 
+  function removeGpx(id: string) {
+    updateTrail(id, { gpxTrack: undefined })
+  }
+
   function addTrail(name: string) {
     const id = `trail-custom-${Date.now()}`
     const newTrail: Trail = { id, number: '', name, completed: false }
@@ -84,5 +88,5 @@ export function useTrails() {
     upsertTrail(newTrail)
   }
 
-  return { trails, syncing, toggleComplete, attachGpx, addTrail }
+  return { trails, syncing, toggleComplete, attachGpx, removeGpx, addTrail }
 }
