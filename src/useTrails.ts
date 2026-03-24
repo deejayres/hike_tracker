@@ -72,11 +72,17 @@ export function useTrails() {
     })
   }
 
-  function attachGpx(id: string, track: GpxTrack) {
-    updateTrail(id, trail => ({
-      gpxTrack: track,
-      completedDate: trail.completed && track.date ? track.date : trail.completedDate,
-    }))
+  function attachGpx(id: string, track: GpxTrack, markComplete?: boolean) {
+    updateTrail(id, trail => {
+      const completed = markComplete ? true : trail.completed
+      return {
+        gpxTrack: track,
+        completed,
+        completedDate: completed
+          ? (track.date ?? trail.completedDate ?? new Date().toISOString().split('T')[0])
+          : trail.completedDate,
+      }
+    })
   }
 
   function removeGpx(id: string) {

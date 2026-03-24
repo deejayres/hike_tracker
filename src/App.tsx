@@ -77,8 +77,7 @@ function AppInner() {
 
   function handleImportConfirm(trailId: string, markComplete: boolean) {
     if (!pendingTrack) return
-    attachGpx(trailId, pendingTrack)
-    if (markComplete) toggleComplete(trailId)
+    attachGpx(trailId, pendingTrack, markComplete)
     setSelectedId(trailId)
     setPendingTrack(null)
     setActiveTab('map')
@@ -131,8 +130,7 @@ function AppInner() {
 
   function handleBulkConfirm(imports: { trailId: string; track: GpxTrack; markComplete: boolean }[]) {
     for (const { trailId, track, markComplete } of imports) {
-      attachGpx(trailId, track)
-      if (markComplete) toggleComplete(trailId)
+      attachGpx(trailId, track, markComplete)
     }
     setBulkPending(null)
     setBulkPreviewIndex(null)
