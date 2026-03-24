@@ -6,9 +6,10 @@ interface Props {
   selectedId: string | null
   onSelect: (id: string) => void
   onToggle: (id: string) => void
+  onBulkImport: () => void
 }
 
-export default function TrailList({ trails, selectedId, onSelect, onToggle }: Props) {
+export default function TrailList({ trails, selectedId, onSelect, onToggle, onBulkImport }: Props) {
   const [search, setSearch] = useState('')
   const completed = trails.filter(t => t.completed).length
 
@@ -23,7 +24,10 @@ export default function TrailList({ trails, selectedId, onSelect, onToggle }: Pr
     <div className="trail-list">
       <div className="trail-list-header">
         <h2>Pisgah 400</h2>
-        <span className="progress">{completed} / {trails.length}</span>
+        <div className="trail-list-header-right">
+          <button className="bulk-import-btn" onClick={onBulkImport} title="Bulk import GPX files">⬆ Import</button>
+          <span className="progress">{completed} / {trails.length}</span>
+        </div>
       </div>
 
       <div className="trail-search">

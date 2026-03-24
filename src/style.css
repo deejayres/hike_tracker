@@ -110,6 +110,24 @@ body {
   font-weight: 600;
 }
 
+.trail-list-header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.bulk-import-btn {
+  background: none;
+  border: 1px solid #444;
+  color: #aaa;
+  padding: 3px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.75rem;
+}
+
+.bulk-import-btn:hover { border-color: #888; color: #ddd; }
+
 .progress {
   font-size: 0.85rem;
   color: #22c55e;
@@ -561,6 +579,126 @@ body {
 }
 
 .modal-confirm:disabled { opacity: 0.4; cursor: default; }
+
+/* Bulk import modal */
+.bulk-import-modal {
+  max-width: 560px;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.bulk-import-header {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.bulk-import-summary {
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.bulk-import-list {
+  overflow-y: auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  border: 1px solid #333;
+  border-radius: 6px;
+  padding: 4px;
+  background: #1a1a1a;
+}
+
+.bulk-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 8px;
+  border-radius: 4px;
+  background: #242424;
+}
+
+.bulk-row-skip {
+  opacity: 0.45;
+}
+
+.bulk-checkbox {
+  margin-top: 3px;
+  flex-shrink: 0;
+  accent-color: #22c55e;
+}
+
+.bulk-row-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.bulk-row-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.bulk-trail-name {
+  font-size: 0.85rem;
+  color: #e5e5e5;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bulk-track-stats {
+  display: flex;
+  gap: 8px;
+  font-size: 0.75rem;
+  color: #888;
+}
+
+.bulk-confidence {
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 1px 5px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.confidence-high { background: #14532d; color: #22c55e; }
+.confidence-med  { background: #713f12; color: #f59e0b; }
+.confidence-low  { background: #450a0a; color: #f87171; }
+
+.bulk-conflict {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 4px 6px;
+  background: #1a1a1a;
+  border-radius: 3px;
+  border-left: 2px solid #f59e0b;
+}
+
+.bulk-conflict-label {
+  font-size: 0.7rem;
+  color: #f59e0b;
+  flex-shrink: 0;
+}
+
+.bulk-keep-existing {
+  font-size: 0.75rem;
+  color: #aaa;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  margin-left: auto;
+  accent-color: #22c55e;
+}
 
 /* ── Mobile ───────────────────────────────────── */
 @media (max-width: 768px) {

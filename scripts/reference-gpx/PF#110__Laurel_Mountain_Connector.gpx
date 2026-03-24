@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+<gpx xmlns="http://www.topografix.com/GPX/1/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.1" creator="AllTrails.com" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">
+  <metadata>
+    <name><![CDATA[PF110 - Laurel Mountain Connector]]></name>
+    <desc><![CDATA[]]></desc>
+    <link href="http://www.alltrails.com">
+      <text>AllTrails, LLC</text>
+    </link>
+    <bounds minlat="35.40272" minlon="-82.73751" maxlat="35.40561" maxlon="-82.73679"/>
+  </metadata>
+  <trk>
+    <name><![CDATA[PF110 - Laurel Mountain Connector]]></name>
+    <src>AllTrails</src>
+    <trkseg>
+      <trkpt lat="35.40561" lon="-82.73749">
+        <ele>1436.87</ele>
+      </trkpt>
+      <trkpt lat="35.40561" lon="-82.73749">
+        <ele>1436.87</ele>
+      </trkpt>
+      <trkpt lat="35.4056" lon="-82.73751">
+        <ele>1436.88</ele>
+      </trkpt>
+      <trkpt lat="35.40553" lon="-82.73751">
+        <ele>1439.27</ele>
+      </trkpt>
+      <trkpt lat="35.40552" lon="-82.73728">
+        <ele>1440.01</ele>
+      </trkpt>
+      <trkpt lat="35.40538" lon="-82.73728">
+        <ele>1443.08</ele>
+      </trkpt>
+      <trkpt lat="35.40526" lon="-82.73717">
+        <ele>1443.15</ele>
+      </trkpt>
+      <trkpt lat="35.40497" lon="-82.73716">
+        <ele>1448.63</ele>
+      </trkpt>
+      <trkpt lat="35.40483" lon="-82.73712">
+        <ele>1450.36</ele>
+      </trkpt>
+      <trkpt lat="35.40426" lon="-82.73709">
+        <ele>1459.7</ele>
+      </trkpt>
+      <trkpt lat="35.40414" lon="-82.73706">
+        <ele>1462.32</ele>
+      </trkpt>
+      <trkpt lat="35.404" lon="-82.73705">
+        <ele>1465.02</ele>
+      </trkpt>
+      <trkpt lat="35.40389" lon="-82.73702">
+        <ele>1467.23</ele>
+      </trkpt>
+      <trkpt lat="35.40354" lon="-82.73697">
+        <ele>1471.43</ele>
+      </trkpt>
+      <trkpt lat="35.40328" lon="-82.73691">
+        <ele>1474.04</ele>
+      </trkpt>
+      <trkpt lat="35.4029" lon="-82.73685">
+        <ele>1478.65</ele>
+      </trkpt>
+      <trkpt lat="35.40272" lon="-82.73679">
+        <ele>1478.12</ele>
+      </trkpt>
+    </trkseg>
+  </trk>
+</gpx>

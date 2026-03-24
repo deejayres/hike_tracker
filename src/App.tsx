@@ -1,13 +1,16 @@
 import { useState, useRef, useEffect } from 'react'
+import JSZip from 'jszip'
 import TrailMap from './TrailMap'
 import TrailList from './TrailList'
 import TrailDetail from './TrailDetail'
 import StatsBar from './StatsBar'
 import ImportModal from './ImportModal'
+import BulkImportModal from './BulkImportModal'
 import AuthGate from './AuthGate'
 import { useTrails } from './useTrails'
 import { parseGpx } from './parseGpx'
 import type { GpxTrack } from './types'
+import type { PendingImport } from './BulkImportModal'
 
 type Tab = 'list' | 'map'
 
@@ -29,7 +32,9 @@ function AppInner() {
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [activeTab, setActiveTab] = useState<Tab>('list')
   const [pendingTrack, setPendingTrack] = useState<GpxTrack | null>(null)
+  const [bulkPending, setBulkPending] = useState<PendingImport[] | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const bulkInputRef = useRef<HTMLInputElement>(null)
   const pendingIdRef = useRef<string | null>(null)
 
   const selectedTrail = trails.find(t => t.id === selectedId) ?? null
@@ -77,6 +82,53 @@ function AppInner() {
     setActiveTab('map')
   }
 
+  async function readGpxFiles(files: File[]): Promise<PendingImport[]> {
+    const results: PendingImport[] = []
+    for (const file of files) {
+      const text = await file.text()
+      results.push({ filename: file.name, track: parseGpx(text) })
+    }
+    return results
+  }
+
+  async function handleBulkFiles(files: File[]) {
+    const gpxFiles = files.filter(f => f.name.toLowerCase().endsWith('.gpx'))
+    const zipFiles = files.filter(f => f.name.toLowerCase().endsWith('.zip'))
+
+    const imports: PendingImport[] = []
+
+    // Direct GPX files
+    imports.push(...await readGpxFiles(gpxFiles))
+
+    // Extract GPX from zip(s)
+    for (const zipFile of zipFiles) {
+      const zip = await JSZip.loadAsync(await zipFile.arrayBuffer())
+      const gpxEntries = Object.values(zip.files).filter(
+        f => !f.dir && f.name.toLowerCase().endsWith('.gpx')
+      )
+      for (const entry of gpxEntries) {
+        const text = await entry.async('text')
+        imports.push({ filename: entry.name.split('/').pop() ?? entry.name, track: parseGpx(text) })
+      }
+    }
+
+    if (imports.length > 0) setBulkPending(imports)
+  }
+
+  async function handleBulkInputChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const files = Array.from(e.target.files ?? [])
+    e.target.value = ''
+    if (files.length > 0) await handleBulkFiles(files)
+  }
+
+  function handleBulkConfirm(imports: { trailId: string; track: GpxTrack; markComplete: boolean }[]) {
+    for (const { trailId, track, markComplete } of imports) {
+      attachGpx(trailId, track)
+      if (markComplete) toggleComplete(trailId)
+    }
+    setBulkPending(null)
+  }
+
   if (syncing) return <div className="sync-loading">Loading trails…</div>
 
   return (
@@ -97,6 +149,7 @@ function AppInner() {
               selectedId={selectedId}
               onSelect={handleSelectTrail}
               onToggle={toggleComplete}
+              onBulkImport={() => bulkInputRef.current?.click()}
             />
           )}
         </aside>
@@ -135,12 +188,29 @@ function AppInner() {
         />
       )}
 
+      {bulkPending && (
+        <BulkImportModal
+          pending={bulkPending}
+          trails={trails}
+          onConfirm={handleBulkConfirm}
+          onDismiss={() => setBulkPending(null)}
+        />
+      )}
+
       <input
         ref={fileInputRef}
         type="file"
         accept=".gpx"
         style={{ display: 'none' }}
         onChange={handleFileChange}
+      />
+      <input
+        ref={bulkInputRef}
+        type="file"
+        accept=".gpx,.zip"
+        multiple
+        style={{ display: 'none' }}
+        onChange={handleBulkInputChange}
       />
     </div>
   )
