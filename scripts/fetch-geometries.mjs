@@ -152,6 +152,7 @@ const ALIASES = {
   '288': 'Andy Cove Trail',
   '322': 'Turkey Pen Gap Trail',
   '611': 'Yellow Gap Trail',
+  '340': 'Cove Creek Trail',
 }
 
 function normalize(name) {
