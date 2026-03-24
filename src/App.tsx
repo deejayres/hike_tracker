@@ -5,7 +5,7 @@ import TrailList from './TrailList'
 import TrailDetail from './TrailDetail'
 import StatsBar from './StatsBar'
 import ImportModal from './ImportModal'
-import BulkImportModal from './BulkImportModal'
+import BulkImportPanel from './BulkImportModal'
 import AuthGate from './AuthGate'
 import { useTrails } from './useTrails'
 import { parseGpx } from './parseGpx'
@@ -33,6 +33,8 @@ function AppInner() {
   const [activeTab, setActiveTab] = useState<Tab>('list')
   const [pendingTrack, setPendingTrack] = useState<GpxTrack | null>(null)
   const [bulkPending, setBulkPending] = useState<PendingImport[] | null>(null)
+  const [bulkPreviewIndex, setBulkPreviewIndex] = useState<number | null>(null)
+  const [bulkPreviewData, setBulkPreviewData] = useState<{ points: [number, number][]; trailId: string } | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const bulkInputRef = useRef<HTMLInputElement>(null)
   const pendingIdRef = useRef<string | null>(null)
@@ -121,12 +123,26 @@ function AppInner() {
     if (files.length > 0) await handleBulkFiles(files)
   }
 
+  function handleBulkPreview(index: number | null, data: { points: [number, number][]; trailId: string } | null) {
+    setBulkPreviewIndex(index)
+    setBulkPreviewData(data)
+    if (data) setActiveTab('map')
+  }
+
   function handleBulkConfirm(imports: { trailId: string; track: GpxTrack; markComplete: boolean }[]) {
     for (const { trailId, track, markComplete } of imports) {
       attachGpx(trailId, track)
       if (markComplete) toggleComplete(trailId)
     }
     setBulkPending(null)
+    setBulkPreviewIndex(null)
+    setBulkPreviewData(null)
+  }
+
+  function handleBulkDismiss() {
+    setBulkPending(null)
+    setBulkPreviewIndex(null)
+    setBulkPreviewData(null)
   }
 
   if (syncing) return <div className="sync-loading">Loading trails…</div>
@@ -136,7 +152,16 @@ function AppInner() {
       <StatsBar trails={trails} />
       <div className={`app-body tab-${activeTab}`}>
         <aside className="sidebar">
-          {selectedTrail ? (
+          {bulkPending ? (
+            <BulkImportPanel
+              pending={bulkPending}
+              trails={trails}
+              previewIndex={bulkPreviewIndex}
+              onPreview={(index, data) => handleBulkPreview(index, data)}
+              onConfirm={handleBulkConfirm}
+              onDismiss={handleBulkDismiss}
+            />
+          ) : selectedTrail ? (
             <TrailDetail
               trail={selectedTrail}
               onToggle={toggleComplete}
@@ -157,8 +182,9 @@ function AppInner() {
         <main className="map-area">
           <TrailMap
             trails={trails}
-            selectedId={selectedId}
+            selectedId={bulkPreviewData?.trailId ?? selectedId}
             onSelect={id => { setSelectedId(id); setActiveTab('map') }}
+            previewTrack={bulkPreviewData?.points ?? null}
           />
         </main>
       </div>
@@ -186,15 +212,6 @@ function AppInner() {
           trails={trails}
           onConfirm={handleImportConfirm}
           onDismiss={() => setPendingTrack(null)}
-        />
-      )}
-
-      {bulkPending && (
-        <BulkImportModal
-          pending={bulkPending}
-          trails={trails}
-          onConfirm={handleBulkConfirm}
-          onDismiss={() => setBulkPending(null)}
         />
       )}
 

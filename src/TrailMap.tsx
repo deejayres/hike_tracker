@@ -9,6 +9,7 @@ interface Props {
   trails: Trail[]
   selectedId: string | null
   onSelect: (id: string) => void
+  previewTrack?: [number, number][] | null
 }
 
 const CENTER: [number, number] = [35.3, -82.75]
@@ -41,22 +42,22 @@ function getSegments(trail: Trail): [number, number][][] {
     : (GEO[trail.id] ?? [])
 }
 
-function FocusSelected({ trails, selectedId }: { trails: Trail[]; selectedId: string | null }) {
+function FocusSelected({ trails, selectedId, previewTrack }: { trails: Trail[]; selectedId: string | null; previewTrack?: [number, number][] | null }) {
   const map = useMap()
   useEffect(() => {
     if (!selectedId) return
     const trail = trails.find(t => t.id === selectedId)
     if (!trail) return
     const segments = getSegments(trail)
-    if (!segments.length) return
     const bounds = new LatLngBounds([])
     segments.forEach(seg => seg.forEach(([lat, lng]) => bounds.extend([lat, lng])))
+    if (previewTrack) previewTrack.forEach(([lat, lng]) => bounds.extend([lat, lng]))
     if (bounds.isValid()) map.fitBounds(bounds, { padding: [40, 40], maxZoom: 15 })
-  }, [selectedId, trails, map])
+  }, [selectedId, previewTrack, trails, map])
   return null
 }
 
-export default function TrailMap({ trails, selectedId, onSelect }: Props) {
+export default function TrailMap({ trails, selectedId, onSelect, previewTrack }: Props) {
   const [tileId, setTileId] = useState('topo')
   const tile = TILE_STYLES.find(t => t.id === tileId) ?? TILE_STYLES[0]
 
@@ -64,7 +65,7 @@ export default function TrailMap({ trails, selectedId, onSelect }: Props) {
     <div style={{ position: 'relative', height: '100%', width: '100%' }}>
       <MapContainer center={CENTER} zoom={11} style={{ height: '100%', width: '100%' }}>
         <TileLayer key={tile.id} url={tile.url} attribution={tile.attribution} />
-        <FocusSelected trails={trails} selectedId={selectedId} />
+        <FocusSelected trails={trails} selectedId={selectedId} previewTrack={previewTrack} />
         {trails.map(trail => {
           const isSelected = selectedId === trail.id
           const segments = getSegments(trail)
@@ -84,6 +85,19 @@ export default function TrailMap({ trails, selectedId, onSelect }: Props) {
             </Polyline>
           ))
         })}
+        {previewTrack && previewTrack.length > 0 && (
+          <Polyline
+            positions={previewTrack}
+            pathOptions={{
+              color: '#f59e0b',
+              weight: 4,
+              opacity: 0.9,
+              dashArray: '8 6',
+            }}
+          >
+            <Tooltip sticky>GPX preview</Tooltip>
+          </Polyline>
+        )}
       </MapContainer>
 
       <div className="tile-switcher">
