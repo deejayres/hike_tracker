@@ -151,7 +151,12 @@ const REFERENCE_GPX = {
   '138': 'PF#138_Bennet_Gap.gpx',
   '344': 'PF344_Excercise_Trail.gpx',
   '321A': 'PF321A__Pilot_Cove_Extension.gpx',
+  '356': 'PF356_Graveyard_Ridge_Trail.gpx',
+  '356A': 'PF356A__Graveyard_Ridge_Connector.gpx',
 }
+
+// Reference GPX files that should replace OSM geometry (when OSM is wrong)
+const REFERENCE_GPX_OVERRIDES = new Set(['356'])
 
 // Manual overrides for trails where OSM name differs from our list
 // trailNumber -> OSM name to match against
@@ -263,7 +268,7 @@ out geom;
   let gpxCount = 0
   for (const [number, filename] of Object.entries(REFERENCE_GPX)) {
     const id = `trail-${number}`
-    if (geometries[id]) continue // OSM geometry exists, skip
+    if (geometries[id] && !REFERENCE_GPX_OVERRIDES.has(number)) continue // OSM geometry exists, skip
     const gpxPath = path.join(gpxDir, filename)
     if (!fs.existsSync(gpxPath)) {
       console.log(`  warning: ${gpxPath} not found, skipping`)
