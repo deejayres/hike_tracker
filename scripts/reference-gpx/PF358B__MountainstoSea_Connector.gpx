@@ -1,0 +1,80 @@
+<?xml version="1.0"?>
+<gpx xmlns="http://www.topografix.com/GPX/1/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.1" creator="AllTrails.com" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">
+  <metadata>
+    <name><![CDATA[PF358B - Mountains-to-Sea Connector]]></name>
+    <desc><![CDATA[]]></desc>
+    <link href="http://www.alltrails.com">
+      <text>AllTrails, LLC</text>
+    </link>
+    <bounds minlat="35.32243" minlon="-82.84717" maxlat="35.32377" maxlon="-82.84489"/>
+  </metadata>
+  <trk>
+    <name><![CDATA[PF358B - Mountains-to-Sea Connector]]></name>
+    <src>AllTrails</src>
+    <trkseg>
+      <trkpt lat="35.32243" lon="-82.84714">
+        <ele>1526.82</ele>
+      </trkpt>
+      <trkpt lat="35.32243" lon="-82.84714">
+        <ele>1526.82</ele>
+      </trkpt>
+      <trkpt lat="35.32243" lon="-82.84717">
+        <ele>1527.06</ele>
+      </trkpt>
+      <trkpt lat="35.32249" lon="-82.84709">
+        <ele>1527.77</ele>
+      </trkpt>
+      <trkpt lat="35.32257" lon="-82.84703">
+        <ele>1529.17</ele>
+      </trkpt>
+      <trkpt lat="35.3226" lon="-82.84697">
+        <ele>1529.44</ele>
+      </trkpt>
+      <trkpt lat="35.32275" lon="-82.84678">
+        <ele>1530.39</ele>
+      </trkpt>
+      <trkpt lat="35.3228" lon="-82.84672">
+        <ele>1531.3</ele>
+      </trkpt>
+      <trkpt lat="35.32278" lon="-82.84644">
+        <ele>1527.65</ele>
+      </trkpt>
+      <trkpt lat="35.32279" lon="-82.84624">
+        <ele>1526.66</ele>
+      </trkpt>
+      <trkpt lat="35.32278" lon="-82.84598">
+        <ele>1527.09</ele>
+      </trkpt>
+      <trkpt lat="35.32285" lon="-82.84582">
+        <ele>1528.34</ele>
+      </trkpt>
+      <trkpt lat="35.32308" lon="-82.84542">
+        <ele>1530.8</ele>
+      </trkpt>
+      <trkpt lat="35.32309" lon="-82.84534">
+        <ele>1530.04</ele>
+      </trkpt>
+      <trkpt lat="35.32313" lon="-82.84525">
+        <ele>1529.26</ele>
+      </trkpt>
+      <trkpt lat="35.3232" lon="-82.84526">
+        <ele>1529.72</ele>
+      </trkpt>
+      <trkpt lat="35.32327" lon="-82.8453">
+        <ele>1530.48</ele>
+      </trkpt>
+      <trkpt lat="35.32355" lon="-82.84523">
+        <ele>1530.82</ele>
+      </trkpt>
+      <trkpt lat="35.32367" lon="-82.84512">
+        <ele>1530.3</ele>
+      </trkpt>
+      <trkpt lat="35.32377" lon="-82.84492">
+        <ele>1528.14</ele>
+      </trkpt>
+      <trkpt lat="35.32377" lon="-82.84489">
+        <ele>1527.62</ele>
+      </trkpt>
+    </trkseg>
+  </trk>
+</gpx>
