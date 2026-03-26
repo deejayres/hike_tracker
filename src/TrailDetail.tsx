@@ -17,6 +17,7 @@ interface Props {
   onToggle: (id: string) => void
   onAttachGpx: (id: string) => void
   onRemoveGpx: (id: string, index: number) => void
+  onSplitTrack: (id: string, index: number) => void
   onBack?: () => void
 }
 
@@ -34,12 +35,15 @@ function Stat({ label, value }: StatProps) {
   )
 }
 
-function TrackCard({ track, index, onRemove }: { track: GpxTrack; index: number; onRemove: (i: number) => void }) {
+function TrackCard({ track, index, onRemove, onSplit }: { track: GpxTrack; index: number; onRemove: (i: number) => void; onSplit: (i: number) => void }) {
   return (
     <div className="track-card">
       <div className="track-card-header">
         <span className="track-card-name">{track.name}</span>
-        <button className="track-remove-btn" onClick={() => onRemove(index)} title="Remove this track">×</button>
+        <div className="track-card-actions">
+          <button className="track-split-btn" onClick={() => onSplit(index)} title="Split into multiple trails">Split</button>
+          <button className="track-remove-btn" onClick={() => onRemove(index)} title="Remove this track">×</button>
+        </div>
       </div>
       <div className="stats">
         {track.date && <Stat label="Date" value={formatDate(track.date)} />}
@@ -74,7 +78,7 @@ function TrackTotals({ tracks }: { tracks: GpxTrack[] }) {
   )
 }
 
-export default function TrailDetail({ trail, onToggle, onAttachGpx, onRemoveGpx, onBack }: Props) {
+export default function TrailDetail({ trail, onToggle, onAttachGpx, onRemoveGpx, onSplitTrack, onBack }: Props) {
   const tracks = trail.gpxTracks
 
   return (
@@ -108,6 +112,7 @@ export default function TrailDetail({ trail, onToggle, onAttachGpx, onRemoveGpx,
               track={track}
               index={i}
               onRemove={(idx) => onRemoveGpx(trail.id, idx)}
+              onSplit={(idx) => onSplitTrack(trail.id, idx)}
             />
           ))}
         </div>

@@ -6,6 +6,7 @@ import TrailDetail from './TrailDetail'
 import StatsBar from './StatsBar'
 import ImportModal from './ImportModal'
 import BulkImportPanel from './BulkImportModal'
+import SplitModal from './SplitModal'
 import AuthGate from './AuthGate'
 import { useTrails } from './useTrails'
 import { parseGpx } from './parseGpx'
@@ -35,6 +36,7 @@ function AppInner() {
   const [bulkPending, setBulkPending] = useState<PendingImport[] | null>(null)
   const [bulkPreviewIndex, setBulkPreviewIndex] = useState<number | null>(null)
   const [bulkPreviewData, setBulkPreviewData] = useState<{ points: [number, number][]; trailId: string } | null>(null)
+  const [splitTarget, setSplitTarget] = useState<{ trailId: string; trackIndex: number } | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const bulkInputRef = useRef<HTMLInputElement>(null)
   const pendingIdRef = useRef<string | null>(null)
@@ -137,6 +139,21 @@ function AppInner() {
     setBulkPreviewData(null)
   }
 
+  function handleSplitTrack(trailId: string, trackIndex: number) {
+    setSplitTarget({ trailId, trackIndex })
+  }
+
+  function handleSplitConfirm(splits: { trailId: string; track: GpxTrack }[]) {
+    if (!splitTarget) return
+    // Remove the original track
+    removeGpx(splitTarget.trailId, splitTarget.trackIndex)
+    // Attach each split segment to its trail
+    for (const { trailId, track } of splits) {
+      attachGpx(trailId, track)
+    }
+    setSplitTarget(null)
+  }
+
   function handleBulkDismiss() {
     setBulkPending(null)
     setBulkPreviewIndex(null)
@@ -165,6 +182,7 @@ function AppInner() {
               onToggle={toggleComplete}
               onAttachGpx={handleAttachGpx}
               onRemoveGpx={removeGpx}
+              onSplitTrack={handleSplitTrack}
               onBack={() => setSelectedId(null)}
             />
           ) : (
@@ -212,6 +230,19 @@ function AppInner() {
           onDismiss={() => setPendingTrack(null)}
         />
       )}
+
+      {splitTarget && (() => {
+        const t = trails.find(t => t.id === splitTarget.trailId)
+        return t ? (
+          <SplitModal
+            trail={t}
+            trackIndex={splitTarget.trackIndex}
+            trails={trails}
+            onConfirm={handleSplitConfirm}
+            onDismiss={() => setSplitTarget(null)}
+          />
+        ) : null
+      })()}
 
       <input
         ref={fileInputRef}

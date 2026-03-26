@@ -343,6 +343,24 @@ body {
   text-overflow: ellipsis;
 }
 
+.track-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.track-split-btn {
+  background: none;
+  border: 1px solid #444;
+  color: #aaa;
+  font-size: 0.7rem;
+  cursor: pointer;
+  padding: 1px 6px;
+  border-radius: 3px;
+}
+
+.track-split-btn:hover { border-color: #888; color: #ddd; }
+
 .track-remove-btn {
   background: none;
   border: none;
@@ -354,6 +372,48 @@ body {
 }
 
 .track-remove-btn:hover { color: #f87171; }
+
+/* Split modal */
+.split-description {
+  font-size: 0.85rem;
+  color: #aaa;
+}
+
+.split-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 6px;
+  padding: 4px;
+}
+
+.split-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  accent-color: #22c55e;
+}
+
+.split-row:hover { background: #2e2e2e; }
+
+.split-row-skip { opacity: 0.45; }
+
+.split-trail-name {
+  flex: 1;
+  font-size: 0.85rem;
+  color: #e5e5e5;
+}
+
+.split-distance {
+  font-size: 0.8rem;
+  color: #888;
+  flex-shrink: 0;
+}
 
 .track-totals {
   display: flex;
