@@ -150,6 +150,7 @@ const REFERENCE_GPX = {
   '130': 'PF#130__Courthouse_Falls.gpx',
   '138': 'PF#138_Bennet_Gap.gpx',
   '344': 'PF344_Excercise_Trail.gpx',
+  '321A': 'PF321A__Pilot_Cove_Extension.gpx',
 }
 
 // Manual overrides for trails where OSM name differs from our list
@@ -166,6 +167,7 @@ const ALIASES = {
   '609': 'Seniard Ridge Trail',
   '665': 'Boyd Branch Trail',
   '358A': 'Graveyard Upper Falls Trail',
+  '349': 'Pounding Mill',
 }
 
 function normalize(name) {
