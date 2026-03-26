@@ -153,10 +153,11 @@ const REFERENCE_GPX = {
   '321A': 'PF321A__Pilot_Cove_Extension.gpx',
   '356': 'PF356_Graveyard_Ridge_Trail.gpx',
   '356A': 'PF356A__Graveyard_Ridge_Connector.gpx',
+  '345': 'PF345__ShutIn_Trail.gpx',
 }
 
 // Reference GPX files that should replace OSM geometry (when OSM is wrong)
-const REFERENCE_GPX_OVERRIDES = new Set(['356'])
+const REFERENCE_GPX_OVERRIDES = new Set(['356', '345'])
 
 // Manual overrides for trails where OSM name differs from our list
 // trailNumber -> OSM name to match against
