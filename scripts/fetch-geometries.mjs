@@ -143,6 +143,15 @@ const TRAILS = [
   ['666',  'Wolf Branch'],
 ]
 
+// Reference GPX files for trails not in OSM
+// trailNumber -> filename in scripts/reference-gpx/
+const REFERENCE_GPX = {
+  '110': 'PF#110__Laurel_Mountain_Connector.gpx',
+  '130': 'PF#130__Courthouse_Falls.gpx',
+  '138': 'PF#138_Bennet_Gap.gpx',
+  '344': 'PF344_Excercise_Trail.gpx',
+}
+
 // Manual overrides for trails where OSM name differs from our list
 // trailNumber -> OSM name to match against
 const ALIASES = {
@@ -156,6 +165,7 @@ const ALIASES = {
   '116': 'Long Branch Trail',
   '609': 'Seniard Ridge Trail',
   '665': 'Boyd Branch Trail',
+  '358A': 'Graveyard Upper Falls Trail',
 }
 
 function normalize(name) {
@@ -245,6 +255,27 @@ out geom;
     // coords as [lat, lng] to match Leaflet convention
     geometries[id].push(way.geometry.map(pt => [pt.lat, pt.lon]))
   }
+
+  // Merge reference GPX files for trails without OSM geometry
+  const gpxDir = path.join(__dirname, 'reference-gpx')
+  let gpxCount = 0
+  for (const [number, filename] of Object.entries(REFERENCE_GPX)) {
+    const id = `trail-${number}`
+    if (geometries[id]) continue // OSM geometry exists, skip
+    const gpxPath = path.join(gpxDir, filename)
+    if (!fs.existsSync(gpxPath)) {
+      console.log(`  warning: ${gpxPath} not found, skipping`)
+      continue
+    }
+    const xml = fs.readFileSync(gpxPath, 'utf-8')
+    const points = [...xml.matchAll(/<trkpt\s+lat="([^"]+)"\s+lon="([^"]+)"/g)]
+      .map(m => [parseFloat(m[1]), parseFloat(m[2])])
+    if (points.length > 0) {
+      geometries[id] = [points]
+      gpxCount++
+    }
+  }
+  if (gpxCount) console.log(`\nMerged ${gpxCount} reference GPX files`)
 
   // Summary
   const matched = Object.keys(geometries).length
