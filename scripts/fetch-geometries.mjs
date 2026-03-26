@@ -155,6 +155,7 @@ const REFERENCE_GPX = {
   '356A': 'PF356A__Graveyard_Ridge_Connector.gpx',
   '345': 'PF345__ShutIn_Trail.gpx',
   '440': 'PF440__MST_excluding_shutin.gpx',
+  '358B': 'PF358B__MountainstoSea_Connector.gpx',
 }
 
 // Reference GPX files that should replace OSM geometry (when OSM is wrong)
