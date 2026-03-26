@@ -1,4 +1,4 @@
-import type { Trail } from './types'
+import type { Trail, GpxTrack } from './types'
 import { formatDate, formatDuration } from './formatters'
 import { segmentDistance } from './geo'
 import geometries from './trailGeometries.json'
@@ -16,7 +16,7 @@ interface Props {
   trail: Trail
   onToggle: (id: string) => void
   onAttachGpx: (id: string) => void
-  onRemoveGpx: (id: string) => void
+  onRemoveGpx: (id: string, index: number) => void
   onBack?: () => void
 }
 
@@ -34,8 +34,48 @@ function Stat({ label, value }: StatProps) {
   )
 }
 
+function TrackCard({ track, index, onRemove }: { track: GpxTrack; index: number; onRemove: (i: number) => void }) {
+  return (
+    <div className="track-card">
+      <div className="track-card-header">
+        <span className="track-card-name">{track.name}</span>
+        <button className="track-remove-btn" onClick={() => onRemove(index)} title="Remove this track">×</button>
+      </div>
+      <div className="stats">
+        {track.date && <Stat label="Date" value={formatDate(track.date)} />}
+        {track.distanceMiles != null && (
+          <Stat label="Distance" value={`${track.distanceMiles} mi`} />
+        )}
+        {track.durationSecs != null && (
+          <Stat label="Duration" value={formatDuration(track.durationSecs)} />
+        )}
+        {track.elevationGainFt != null && (
+          <Stat label="Elevation gain" value={`${track.elevationGainFt.toLocaleString()} ft`} />
+        )}
+      </div>
+    </div>
+  )
+}
+
+function TrackTotals({ tracks }: { tracks: GpxTrack[] }) {
+  const totalMiles = tracks.reduce((sum, t) => sum + (t.distanceMiles ?? 0), 0)
+  const totalSecs = tracks.reduce((sum, t) => sum + (t.durationSecs ?? 0), 0)
+  const totalElev = tracks.reduce((sum, t) => sum + (t.elevationGainFt ?? 0), 0)
+
+  return (
+    <div className="track-totals">
+      <span className="track-totals-label">Totals ({tracks.length} tracks)</span>
+      <div className="stats">
+        {totalMiles > 0 && <Stat label="Distance" value={`${totalMiles.toFixed(1)} mi`} />}
+        {totalSecs > 0 && <Stat label="Duration" value={formatDuration(totalSecs)} />}
+        {totalElev > 0 && <Stat label="Elevation gain" value={`${totalElev.toLocaleString()} ft`} />}
+      </div>
+    </div>
+  )
+}
+
 export default function TrailDetail({ trail, onToggle, onAttachGpx, onRemoveGpx, onBack }: Props) {
-  const gpx = trail.gpxTrack
+  const tracks = trail.gpxTracks
 
   return (
     <div className="trail-detail">
@@ -59,18 +99,17 @@ export default function TrailDetail({ trail, onToggle, onAttachGpx, onRemoveGpx,
         )}
       </div>
 
-      {gpx ? (
-        <div className="stats">
-          {gpx.date && <Stat label="Date" value={formatDate(gpx.date)} />}
-          {gpx.distanceMiles != null && (
-            <Stat label="Distance" value={`${gpx.distanceMiles} mi`} />
-          )}
-          {gpx.durationSecs != null && (
-            <Stat label="Duration" value={formatDuration(gpx.durationSecs)} />
-          )}
-          {gpx.elevationGainFt != null && (
-            <Stat label="Elevation gain" value={`${gpx.elevationGainFt.toLocaleString()} ft`} />
-          )}
+      {tracks.length > 0 ? (
+        <div className="track-list">
+          {tracks.length > 1 && <TrackTotals tracks={tracks} />}
+          {tracks.map((track, i) => (
+            <TrackCard
+              key={i}
+              track={track}
+              index={i}
+              onRemove={(idx) => onRemoveGpx(trail.id, idx)}
+            />
+          ))}
         </div>
       ) : (() => {
         const miles = osmMiles(trail.id)
@@ -83,16 +122,9 @@ export default function TrailDetail({ trail, onToggle, onAttachGpx, onRemoveGpx,
         )
       })()}
 
-      <div className="detail-gpx-actions">
-        <button className="attach-gpx-btn" onClick={() => onAttachGpx(trail.id)}>
-          {gpx ? 'Replace GPX' : 'Attach GPX'}
-        </button>
-        {gpx && (
-          <button className="remove-gpx-btn" onClick={() => onRemoveGpx(trail.id)}>
-            Remove GPX
-          </button>
-        )}
-      </div>
+      <button className="attach-gpx-btn" onClick={() => onAttachGpx(trail.id)}>
+        Add GPX
+      </button>
     </div>
   )
 }

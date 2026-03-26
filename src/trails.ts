@@ -129,4 +129,5 @@ export const DEFAULT_TRAILS: Trail[] = RAW.map(([number, name]) => ({
   number,
   name,
   completed: false,
+  gpxTracks: [],
 }))

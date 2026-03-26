@@ -3,7 +3,15 @@ import type { Trail, GpxTrack } from './types'
 import { DEFAULT_TRAILS } from './trails'
 import { supabase } from './supabase'
 
-type TrailState = Pick<Trail, 'completed' | 'completedDate' | 'gpxTrack'>
+type TrailState = Pick<Trail, 'completed' | 'completedDate' | 'gpxTracks'>
+
+// Handle old format (single object) and new format (array)
+function migrateGpxTracks(raw: unknown): GpxTrack[] {
+  if (!raw) return []
+  if (Array.isArray(raw)) return raw
+  // Old single-object format
+  return [raw as GpxTrack]
+}
 
 async function loadFromSupabase(): Promise<Trail[]> {
   const { data, error } = await supabase
@@ -17,7 +25,7 @@ async function loadFromSupabase(): Promise<Trail[]> {
     stateMap.set(row.trail_id, {
       completed: row.completed,
       completedDate: row.completed_date ?? undefined,
-      gpxTrack: row.gpx_track ?? undefined,
+      gpxTracks: migrateGpxTracks(row.gpx_track),
     })
   }
 
@@ -33,7 +41,7 @@ async function upsertTrail(trail: Trail) {
     user_id: user.id,
     completed: trail.completed,
     completed_date: trail.completedDate ?? null,
-    gpx_track: trail.gpxTrack ?? null,
+    gpx_track: trail.gpxTracks.length > 0 ? trail.gpxTracks : null,
     updated_at: new Date().toISOString(),
   }, { onConflict: 'trail_id,user_id' })
 }
@@ -63,10 +71,13 @@ export function useTrails() {
   function toggleComplete(id: string) {
     updateTrail(id, trail => {
       const nowCompleted = !trail.completed
+      const latestDate = trail.gpxTracks.length > 0
+        ? trail.gpxTracks.map(t => t.date).filter(Boolean).sort().pop()
+        : undefined
       return {
         completed: nowCompleted,
         completedDate: nowCompleted
-          ? (trail.gpxTrack?.date ?? new Date().toISOString().split('T')[0])
+          ? (latestDate ?? new Date().toISOString().split('T')[0])
           : undefined,
       }
     })
@@ -74,24 +85,28 @@ export function useTrails() {
 
   function attachGpx(id: string, track: GpxTrack, markComplete?: boolean) {
     updateTrail(id, trail => {
+      const gpxTracks = [...trail.gpxTracks, track]
       const completed = markComplete ? true : trail.completed
+      const latestDate = gpxTracks.map(t => t.date).filter(Boolean).sort().pop()
       return {
-        gpxTrack: track,
+        gpxTracks,
         completed,
         completedDate: completed
-          ? (track.date ?? trail.completedDate ?? new Date().toISOString().split('T')[0])
+          ? (latestDate ?? trail.completedDate ?? new Date().toISOString().split('T')[0])
           : trail.completedDate,
       }
     })
   }
 
-  function removeGpx(id: string) {
-    updateTrail(id, () => ({ gpxTrack: undefined }))
+  function removeGpx(id: string, trackIndex: number) {
+    updateTrail(id, trail => ({
+      gpxTracks: trail.gpxTracks.filter((_, i) => i !== trackIndex),
+    }))
   }
 
   function addTrail(name: string) {
     const id = `trail-custom-${Date.now()}`
-    const newTrail: Trail = { id, number: '', name, completed: false }
+    const newTrail: Trail = { id, number: '', name, completed: false, gpxTracks: [] }
     setTrails(prev => [...prev, newTrail])
     upsertTrail(newTrail)
   }

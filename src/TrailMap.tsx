@@ -37,9 +37,14 @@ const TILE_STYLES = [
 ]
 
 function getSegments(trail: Trail): [number, number][][] {
-  return trail.gpxTrack?.points.length
-    ? [trail.gpxTrack.points]
-    : (GEO[trail.id] ?? [])
+  if (trail.gpxTracks.length > 0) return trail.gpxTracks.map(t => t.points)
+  return GEO[trail.id] ?? []
+}
+
+function trailColor(trail: Trail): string {
+  if (trail.completed) return '#22c55e'
+  if (trail.gpxTracks.length > 0) return '#f59e0b' // in progress
+  return '#6b7280'
 }
 
 function FocusSelected({ trails, selectedId, previewTrack }: { trails: Trail[]; selectedId: string | null; previewTrack?: [number, number][] | null }) {
@@ -75,9 +80,9 @@ export default function TrailMap({ trails, selectedId, onSelect, previewTrack }:
               key={`${trail.id}-${i}`}
               positions={positions}
               pathOptions={{
-                color: trail.completed ? '#22c55e' : '#6b7280',
+                color: trailColor(trail),
                 weight: isSelected ? 5 : 3,
-                opacity: isSelected ? 1 : trail.completed ? 0.85 : 0.5,
+                opacity: isSelected ? 1 : trail.completed ? 0.85 : trail.gpxTracks.length > 0 ? 0.75 : 0.5,
               }}
               eventHandlers={{ click: () => onSelect(trail.id) }}
             >

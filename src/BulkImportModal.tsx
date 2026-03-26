@@ -14,9 +14,8 @@ export interface MatchedRow {
   trailId: string
   trailName: string
   score: number
-  existingGpx: GpxTrack | undefined
+  existingCount: number
   include: boolean
-  keepExisting: boolean
 }
 
 interface Props {
@@ -65,9 +64,8 @@ function useBulkRows(pending: PendingImport[], trails: Trail[]) {
         trailId: match.trailId,
         trailName: `${trail.number} ${trail.name}`,
         score: match.score,
-        existingGpx: trail.gpxTrack,
+        existingCount: trail.gpxTracks.length,
         include: true,
-        keepExisting: false,
       }]
     })
   }, [pending, trailMap])
@@ -86,11 +84,7 @@ export default function BulkImportPanel({ pending, trails, previewIndex, onPrevi
     setRows(prev => prev.map((r, idx) => idx === i ? { ...r, include: !r.include } : r))
   }
 
-  function toggleKeepExisting(i: number) {
-    setRows(prev => prev.map((r, idx) => idx === i ? { ...r, keepExisting: !r.keepExisting } : r))
-  }
-
-  const included = rows.filter(r => r.include && !r.keepExisting)
+  const included = rows.filter(r => r.include)
 
   function handleConfirm() {
     onConfirm(included.map(r => ({ trailId: r.trailId, track: r.track, markComplete })))
@@ -128,7 +122,7 @@ export default function BulkImportPanel({ pending, trails, previewIndex, onPrevi
             key={i}
             className={[
               'bulk-row',
-              row.include && !row.keepExisting ? '' : 'bulk-row-skip',
+              row.include ? '' : 'bulk-row-skip',
               previewIndex === i ? 'bulk-row-preview' : '',
             ].join(' ')}
             onClick={() => {
@@ -154,19 +148,10 @@ export default function BulkImportPanel({ pending, trails, previewIndex, onPrevi
                 </span>
               </div>
               <TrackStats track={row.track} />
-              {row.existingGpx && row.include && (
-                <div className="bulk-conflict">
-                  <span className="bulk-conflict-label">Existing:</span>
-                  <TrackStats track={row.existingGpx} />
-                  <label className="bulk-keep-existing" onClick={e => e.stopPropagation()}>
-                    <input
-                      type="checkbox"
-                      checked={row.keepExisting}
-                      onChange={() => toggleKeepExisting(i)}
-                    />
-                    keep existing
-                  </label>
-                </div>
+              {row.existingCount > 0 && (
+                <span className="bulk-existing-note">
+                  +{row.existingCount} existing track{row.existingCount > 1 ? 's' : ''}
+                </span>
               )}
             </div>
           </div>

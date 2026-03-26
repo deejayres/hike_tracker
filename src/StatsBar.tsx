@@ -11,7 +11,8 @@ for (const [id, segments] of Object.entries(GEO)) {
 }
 
 function trailDistance(trail: Trail): number {
-  if (trail.gpxTrack?.distanceMiles) return trail.gpxTrack.distanceMiles
+  const gpxMiles = trail.gpxTracks.reduce((sum, t) => sum + (t.distanceMiles ?? 0), 0)
+  if (gpxMiles > 0) return gpxMiles
   return osmDistances[trail.id] ?? 0
 }
 

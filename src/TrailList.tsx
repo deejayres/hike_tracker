@@ -45,7 +45,7 @@ export default function TrailList({ trails, selectedId, onSelect, onToggle, onBu
             key={trail.id}
             className={[
               'trail-item',
-              trail.completed ? 'completed' : '',
+              trail.completed ? 'completed' : trail.gpxTracks.length > 0 ? 'in-progress' : '',
               selectedId === trail.id ? 'selected' : '',
             ].join(' ')}
             onClick={() => onSelect(trail.id)}
@@ -59,7 +59,11 @@ export default function TrailList({ trails, selectedId, onSelect, onToggle, onBu
             </button>
             <span className="trail-number">{trail.number}</span>
             <span className="trail-name">{trail.name}</span>
-            {trail.gpxTrack && <span className="gpx-indicator" title="GPX attached">📍</span>}
+            {trail.gpxTracks.length > 0 && (
+              <span className="gpx-indicator" title={`${trail.gpxTracks.length} GPX track${trail.gpxTracks.length > 1 ? 's' : ''}`}>
+                📍{trail.gpxTracks.length > 1 ? trail.gpxTracks.length : ''}
+              </span>
+            )}
           </li>
         ))}
         {filtered.length === 0 && (

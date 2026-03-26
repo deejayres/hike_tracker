@@ -187,6 +187,7 @@ body {
 .trail-item:hover { background: #2e2e2e; }
 .trail-item.selected { background: #333; }
 .trail-item.completed .trail-name { color: #22c55e; }
+.trail-item.in-progress .trail-name { color: #f59e0b; }
 
 .check-btn {
   background: none;
@@ -308,6 +309,65 @@ body {
   font-size: 0.9rem;
   color: #e5e5e5;
   font-weight: 500;
+}
+
+/* Track list (multiple GPX) */
+.track-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.track-card {
+  background: #1a1a1a;
+  border-radius: 6px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.track-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.track-card-name {
+  font-size: 0.8rem;
+  color: #aaa;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.track-remove-btn {
+  background: none;
+  border: none;
+  color: #666;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 0 4px;
+  line-height: 1;
+}
+
+.track-remove-btn:hover { color: #f87171; }
+
+.track-totals {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #333;
+}
+
+.track-totals-label {
+  font-size: 0.7rem;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .no-gpx {
@@ -712,32 +772,10 @@ body {
 .confidence-med  { background: #713f12; color: #f59e0b; }
 .confidence-low  { background: #450a0a; color: #f87171; }
 
-.bulk-conflict {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-  padding: 4px 6px;
-  background: #1a1a1a;
-  border-radius: 3px;
-  border-left: 2px solid #f59e0b;
-}
-
-.bulk-conflict-label {
+.bulk-existing-note {
   font-size: 0.7rem;
-  color: #f59e0b;
-  flex-shrink: 0;
-}
-
-.bulk-keep-existing {
-  font-size: 0.75rem;
-  color: #aaa;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  cursor: pointer;
-  margin-left: auto;
-  accent-color: #22c55e;
+  color: #888;
+  font-style: italic;
 }
 
 /* ── Mobile ───────────────────────────────────── */

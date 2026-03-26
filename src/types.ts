@@ -4,7 +4,7 @@ export interface Trail {
   name: string
   completed: boolean
   completedDate?: string // ISO date string, e.g. "2024-06-15"
-  gpxTrack?: GpxTrack
+  gpxTracks: GpxTrack[]
 }
 
 export interface GpxTrack {
