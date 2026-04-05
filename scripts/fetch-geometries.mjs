@@ -13,6 +13,15 @@ import { fileURLToPath } from 'url'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
+function haversine([lat1, lon1], [lat2, lon2]) {
+  const R = 3958.8
+  const dLat = (lat2 - lat1) * Math.PI / 180
+  const dLon = (lon2 - lon1) * Math.PI / 180
+  const a = Math.sin(dLat / 2) ** 2 +
+    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon / 2) ** 2
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+}
+
 // Pisgah Ranger District bounding box: south, west, north, east
 const BBOX = '35.05,-83.1,35.65,-82.3'
 
@@ -156,6 +165,7 @@ const REFERENCE_GPX = {
   '345': 'PF345__ShutIn_Trail.gpx',
   '440': 'PF440__MST_excluding_shutin.gpx',
   '358B': 'PF358B__MountainstoSea_Connector.gpx',
+  '617A': 'PF#617A__Sam_Knob_Summit.gpx',
 }
 
 // Reference GPX files that should replace OSM geometry (when OSM is wrong)
@@ -176,6 +186,7 @@ const ALIASES = {
   '665': 'Boyd Branch Trail',
   '358A': 'Graveyard Upper Falls Trail',
   '349': 'Pounding Mill',
+  '328': 'Bear Branch',
 }
 
 function normalize(name) {
@@ -286,6 +297,21 @@ out geom;
     }
   }
   if (gpxCount) console.log(`\nMerged ${gpxCount} reference GPX files`)
+
+  // Remove overlap between Sam Knob (617) and Sam Knob Summit (617A)
+  if (geometries['trail-617'] && geometries['trail-617A']) {
+    const summitPts = geometries['trail-617A'].flat()
+    const THRESH = 0.02 // ~100ft in miles
+    geometries['trail-617'] = geometries['trail-617']
+      .map(seg => seg.filter(pt => {
+        for (const spt of summitPts) {
+          if (haversine(pt, spt) < THRESH) return false
+        }
+        return true
+      }))
+      .filter(seg => seg.length > 1)
+    console.log('Trimmed Sam Knob (617) to remove overlap with Sam Knob Summit (617A)')
+  }
 
   // Summary
   const matched = Object.keys(geometries).length

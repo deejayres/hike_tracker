@@ -36,6 +36,29 @@ const TILE_STYLES = [
   },
 ]
 
+const HIT_WIDTH = 20 // invisible tap target width in pixels
+
+function TrailPolyline({ trailId, positions, color, weight, opacity, name, onSelect }: {
+  trailId: string; positions: [number, number][]; color: string; weight: number; opacity: number; name: string; onSelect: (id: string) => void
+}) {
+  return (
+    <>
+      <Polyline
+        positions={positions}
+        pathOptions={{ color: 'transparent', weight: HIT_WIDTH, opacity: 0 }}
+        eventHandlers={{ click: () => onSelect(trailId) }}
+      >
+        <Tooltip sticky>{name}</Tooltip>
+      </Polyline>
+      <Polyline
+        positions={positions}
+        pathOptions={{ color, weight, opacity }}
+        interactive={false}
+      />
+    </>
+  )
+}
+
 function trailColor(trail: Trail): string {
   if (trail.completed) return '#22c55e'
   if (trail.gpxTracks.length > 0) return '#f59e0b' // in progress
@@ -77,37 +100,18 @@ export default function TrailMap({ trails, selectedId, onSelect, previewTrack }:
           // For incomplete trails with GPX: show OSM underlay in gray + GPX overlay in orange
           // For completed trails: show GPX (or OSM fallback) in green
           // For trails with no GPX: show OSM in gray
+          const label = `${trail.number} — ${trail.name}`
+          const w = isSelected ? 5 : 3
+
           if (hasGpx && !trail.completed && osmSegments.length > 0) {
             return [
-              // Gray OSM underlay (remaining/unhiked portions visible)
               ...osmSegments.map((positions, i) => (
-                <Polyline
-                  key={`${trail.id}-osm-${i}`}
-                  positions={positions}
-                  pathOptions={{
-                    color: '#6b7280',
-                    weight: isSelected ? 5 : 3,
-                    opacity: isSelected ? 0.7 : 0.5,
-                  }}
-                  eventHandlers={{ click: () => onSelect(trail.id) }}
-                >
-                  <Tooltip sticky>{trail.number} — {trail.name}</Tooltip>
-                </Polyline>
+                <TrailPolyline key={`${trail.id}-osm-${i}`} trailId={trail.id} positions={positions}
+                  color="#6b7280" weight={w} opacity={isSelected ? 0.7 : 0.5} name={label} onSelect={onSelect} />
               )),
-              // Orange GPX overlay (hiked portions)
               ...gpxSegments.map((positions, i) => (
-                <Polyline
-                  key={`${trail.id}-gpx-${i}`}
-                  positions={positions}
-                  pathOptions={{
-                    color: '#f59e0b',
-                    weight: isSelected ? 5 : 3,
-                    opacity: isSelected ? 1 : 0.75,
-                  }}
-                  eventHandlers={{ click: () => onSelect(trail.id) }}
-                >
-                  <Tooltip sticky>{trail.number} — {trail.name}</Tooltip>
-                </Polyline>
+                <TrailPolyline key={`${trail.id}-gpx-${i}`} trailId={trail.id} positions={positions}
+                  color="#f59e0b" weight={w} opacity={isSelected ? 1 : 0.75} name={label} onSelect={onSelect} />
               )),
             ]
           }
@@ -115,18 +119,10 @@ export default function TrailMap({ trails, selectedId, onSelect, previewTrack }:
           const segments = hasGpx ? gpxSegments : osmSegments
           if (!segments.length) return null
           return segments.map((positions, i) => (
-            <Polyline
-              key={`${trail.id}-${i}`}
-              positions={positions}
-              pathOptions={{
-                color: trailColor(trail),
-                weight: isSelected ? 5 : 3,
-                opacity: isSelected ? 1 : trail.completed ? 0.85 : 0.5,
-              }}
-              eventHandlers={{ click: () => onSelect(trail.id) }}
-            >
-              <Tooltip sticky>{trail.number} — {trail.name}</Tooltip>
-            </Polyline>
+            <TrailPolyline key={`${trail.id}-${i}`} trailId={trail.id} positions={positions}
+              color={trailColor(trail)} weight={w}
+              opacity={isSelected ? 1 : trail.completed ? 0.85 : 0.5}
+              name={label} onSelect={onSelect} />
           ))
         })}
         {previewTrack && previewTrack.length > 0 && (
