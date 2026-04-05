@@ -104,6 +104,21 @@ export function useTrails() {
     }))
   }
 
+  function updateGpxDate(id: string, trackIndex: number, date: string) {
+    updateTrail(id, trail => {
+      const gpxTracks = trail.gpxTracks.map((t, i) =>
+        i === trackIndex ? { ...t, date } : t
+      )
+      const latestDate = gpxTracks.map(t => t.date).filter(Boolean).sort().pop()
+      return {
+        gpxTracks,
+        completedDate: trail.completed
+          ? (latestDate ?? trail.completedDate)
+          : trail.completedDate,
+      }
+    })
+  }
+
   function addTrail(name: string) {
     const id = `trail-custom-${Date.now()}`
     const newTrail: Trail = { id, number: '', name, completed: false, gpxTracks: [] }
@@ -111,5 +126,5 @@ export function useTrails() {
     upsertTrail(newTrail)
   }
 
-  return { trails, syncing, toggleComplete, attachGpx, removeGpx, addTrail }
+  return { trails, syncing, toggleComplete, attachGpx, removeGpx, updateGpxDate, addTrail }
 }

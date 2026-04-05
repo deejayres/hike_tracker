@@ -373,6 +373,16 @@ body {
 
 .track-remove-btn:hover { color: #f87171; }
 
+.track-date-input {
+  background: #2a2a2a;
+  border: 1px solid #555;
+  border-radius: 4px;
+  color: #e5e5e5;
+  padding: 2px 6px;
+  font-size: 0.8rem;
+  font-family: inherit;
+}
+
 /* Split modal */
 .split-description {
   font-size: 0.85rem;

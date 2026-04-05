@@ -29,7 +29,7 @@ async function consumePendingShare(): Promise<GpxTrack | null> {
 }
 
 function AppInner() {
-  const { trails, syncing, toggleComplete, attachGpx, removeGpx } = useTrails()
+  const { trails, syncing, toggleComplete, attachGpx, removeGpx, updateGpxDate } = useTrails()
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [activeTab, setActiveTab] = useState<Tab>('list')
   const [pendingTrack, setPendingTrack] = useState<GpxTrack | null>(null)
@@ -182,6 +182,7 @@ function AppInner() {
               onToggle={toggleComplete}
               onAttachGpx={handleAttachGpx}
               onRemoveGpx={removeGpx}
+              onUpdateGpxDate={updateGpxDate}
               onSplitTrack={handleSplitTrack}
               onBack={() => setSelectedId(null)}
             />

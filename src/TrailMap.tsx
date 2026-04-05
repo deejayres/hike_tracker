@@ -36,11 +36,6 @@ const TILE_STYLES = [
   },
 ]
 
-function getSegments(trail: Trail): [number, number][][] {
-  if (trail.gpxTracks.length > 0) return trail.gpxTracks.map(t => t.points)
-  return GEO[trail.id] ?? []
-}
-
 function trailColor(trail: Trail): string {
   if (trail.completed) return '#22c55e'
   if (trail.gpxTracks.length > 0) return '#f59e0b' // in progress
@@ -53,7 +48,9 @@ function FocusSelected({ trails, selectedId, previewTrack }: { trails: Trail[]; 
     if (!selectedId) return
     const trail = trails.find(t => t.id === selectedId)
     if (!trail) return
-    const segments = getSegments(trail)
+    const osmSegments = GEO[trail.id] ?? []
+    const gpxSegments = trail.gpxTracks.map(t => t.points)
+    const segments = gpxSegments.length > 0 ? [...osmSegments, ...gpxSegments] : osmSegments
     const bounds = new LatLngBounds([])
     segments.forEach(seg => seg.forEach(([lat, lng]) => bounds.extend([lat, lng])))
     if (previewTrack) previewTrack.forEach(([lat, lng]) => bounds.extend([lat, lng]))
@@ -73,7 +70,49 @@ export default function TrailMap({ trails, selectedId, onSelect, previewTrack }:
         <FocusSelected trails={trails} selectedId={selectedId} previewTrack={previewTrack} />
         {trails.map(trail => {
           const isSelected = selectedId === trail.id
-          const segments = getSegments(trail)
+          const hasGpx = trail.gpxTracks.length > 0
+          const osmSegments = GEO[trail.id] ?? []
+          const gpxSegments = trail.gpxTracks.map(t => t.points)
+
+          // For incomplete trails with GPX: show OSM underlay in gray + GPX overlay in orange
+          // For completed trails: show GPX (or OSM fallback) in green
+          // For trails with no GPX: show OSM in gray
+          if (hasGpx && !trail.completed && osmSegments.length > 0) {
+            return [
+              // Gray OSM underlay (remaining/unhiked portions visible)
+              ...osmSegments.map((positions, i) => (
+                <Polyline
+                  key={`${trail.id}-osm-${i}`}
+                  positions={positions}
+                  pathOptions={{
+                    color: '#6b7280',
+                    weight: isSelected ? 5 : 3,
+                    opacity: isSelected ? 0.7 : 0.5,
+                  }}
+                  eventHandlers={{ click: () => onSelect(trail.id) }}
+                >
+                  <Tooltip sticky>{trail.number} — {trail.name}</Tooltip>
+                </Polyline>
+              )),
+              // Orange GPX overlay (hiked portions)
+              ...gpxSegments.map((positions, i) => (
+                <Polyline
+                  key={`${trail.id}-gpx-${i}`}
+                  positions={positions}
+                  pathOptions={{
+                    color: '#f59e0b',
+                    weight: isSelected ? 5 : 3,
+                    opacity: isSelected ? 1 : 0.75,
+                  }}
+                  eventHandlers={{ click: () => onSelect(trail.id) }}
+                >
+                  <Tooltip sticky>{trail.number} — {trail.name}</Tooltip>
+                </Polyline>
+              )),
+            ]
+          }
+
+          const segments = hasGpx ? gpxSegments : osmSegments
           if (!segments.length) return null
           return segments.map((positions, i) => (
             <Polyline
@@ -82,7 +121,7 @@ export default function TrailMap({ trails, selectedId, onSelect, previewTrack }:
               pathOptions={{
                 color: trailColor(trail),
                 weight: isSelected ? 5 : 3,
-                opacity: isSelected ? 1 : trail.completed ? 0.85 : trail.gpxTracks.length > 0 ? 0.75 : 0.5,
+                opacity: isSelected ? 1 : trail.completed ? 0.85 : 0.5,
               }}
               eventHandlers={{ click: () => onSelect(trail.id) }}
             >

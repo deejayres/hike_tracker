@@ -17,6 +17,7 @@ interface Props {
   onToggle: (id: string) => void
   onAttachGpx: (id: string) => void
   onRemoveGpx: (id: string, index: number) => void
+  onUpdateGpxDate: (id: string, index: number, date: string) => void
   onSplitTrack: (id: string, index: number) => void
   onBack?: () => void
 }
@@ -35,7 +36,7 @@ function Stat({ label, value }: StatProps) {
   )
 }
 
-function TrackCard({ track, index, onRemove, onSplit }: { track: GpxTrack; index: number; onRemove: (i: number) => void; onSplit: (i: number) => void }) {
+function TrackCard({ track, index, onRemove, onSplit, onUpdateDate }: { track: GpxTrack; index: number; onRemove: (i: number) => void; onSplit: (i: number) => void; onUpdateDate: (i: number, date: string) => void }) {
   return (
     <div className="track-card">
       <div className="track-card-header">
@@ -46,7 +47,18 @@ function TrackCard({ track, index, onRemove, onSplit }: { track: GpxTrack; index
         </div>
       </div>
       <div className="stats">
-        {track.date && <Stat label="Date" value={formatDate(track.date)} />}
+        {track.date ? (
+          <Stat label="Date" value={formatDate(track.date)} />
+        ) : (
+          <div className="stat">
+            <span className="stat-label">Date</span>
+            <input
+              type="date"
+              className="track-date-input"
+              onChange={e => { if (e.target.value) onUpdateDate(index, e.target.value) }}
+            />
+          </div>
+        )}
         {track.distanceMiles != null && (
           <Stat label="Distance" value={`${track.distanceMiles} mi`} />
         )}
@@ -78,7 +90,7 @@ function TrackTotals({ tracks }: { tracks: GpxTrack[] }) {
   )
 }
 
-export default function TrailDetail({ trail, onToggle, onAttachGpx, onRemoveGpx, onSplitTrack, onBack }: Props) {
+export default function TrailDetail({ trail, onToggle, onAttachGpx, onRemoveGpx, onUpdateGpxDate, onSplitTrack, onBack }: Props) {
   const tracks = trail.gpxTracks
 
   return (
@@ -113,6 +125,7 @@ export default function TrailDetail({ trail, onToggle, onAttachGpx, onRemoveGpx,
               index={i}
               onRemove={(idx) => onRemoveGpx(trail.id, idx)}
               onSplit={(idx) => onSplitTrack(trail.id, idx)}
+              onUpdateDate={(idx, date) => onUpdateGpxDate(trail.id, idx, date)}
             />
           ))}
         </div>
