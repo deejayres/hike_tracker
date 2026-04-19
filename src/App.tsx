@@ -1,10 +1,9 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef } from 'react'
 import JSZip from 'jszip'
 import TrailMap from './TrailMap'
 import TrailList from './TrailList'
 import TrailDetail from './TrailDetail'
 import StatsBar from './StatsBar'
-import ImportModal from './ImportModal'
 import BulkImportPanel from './BulkImportModal'
 import SplitModal from './SplitModal'
 import AuthGate from './AuthGate'
@@ -15,24 +14,10 @@ import type { PendingImport } from './BulkImportModal'
 
 type Tab = 'list' | 'map'
 
-async function consumePendingShare(): Promise<GpxTrack | null> {
-  try {
-    const cache = await caches.open('share-target-v1')
-    const response = await cache.match('/hike_tracker/pending-gpx')
-    if (!response) return null
-    const text = await response.text()
-    await cache.delete('/hike_tracker/pending-gpx')
-    return parseGpx(text)
-  } catch {
-    return null
-  }
-}
-
 function AppInner() {
   const { trails, syncing, toggleComplete, attachGpx, removeGpx, updateGpxDate } = useTrails()
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [activeTab, setActiveTab] = useState<Tab>('list')
-  const [pendingTrack, setPendingTrack] = useState<GpxTrack | null>(null)
   const [bulkPending, setBulkPending] = useState<PendingImport[] | null>(null)
   const [bulkPreviewIndex, setBulkPreviewIndex] = useState<number | null>(null)
   const [bulkPreviewData, setBulkPreviewData] = useState<{ points: [number, number][]; trailId: string } | null>(null)
@@ -42,17 +27,6 @@ function AppInner() {
   const pendingIdRef = useRef<string | null>(null)
 
   const selectedTrail = trails.find(t => t.id === selectedId) ?? null
-
-  // Check for incoming GPX share on load
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search)
-    if (params.get('share') === '1') {
-      window.history.replaceState({}, '', window.location.pathname)
-      consumePendingShare().then(track => {
-        if (track) setPendingTrack(track)
-      })
-    }
-  }, [])
 
   function handleSelectTrail(id: string) {
     setSelectedId(id)
@@ -75,14 +49,6 @@ function AppInner() {
     }
     reader.readAsText(file)
     e.target.value = ''
-  }
-
-  function handleImportConfirm(trailId: string, markComplete: boolean) {
-    if (!pendingTrack) return
-    attachGpx(trailId, pendingTrack, markComplete)
-    setSelectedId(trailId)
-    setPendingTrack(null)
-    setActiveTab('map')
   }
 
   async function readGpxFiles(files: File[]): Promise<PendingImport[]> {
@@ -222,15 +188,6 @@ function AppInner() {
           <span className="tab-label">Map</span>
         </button>
       </nav>
-
-      {pendingTrack && (
-        <ImportModal
-          track={pendingTrack}
-          trails={trails}
-          onConfirm={handleImportConfirm}
-          onDismiss={() => setPendingTrack(null)}
-        />
-      )}
 
       {splitTarget && (() => {
         const t = trails.find(t => t.id === splitTarget.trailId)

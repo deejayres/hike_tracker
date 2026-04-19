@@ -51,4 +51,3 @@ These appear in the list but have no map polyline:
 - **GitHub Pages deploy** — needs `base: '/hike_tracker/'` in vite.config.ts + GitHub Actions workflow with secrets for env vars
 - **Search / filter** — search by name or number, filter by complete/incomplete
 - **Bulk GPX import** — drag-and-drop multiple GPX files, auto-match to trails by name
-- **iOS Share Sheet (PWA)** — manifest.json + service worker so WorkOutDoors can share GPX directly to the app; requires HTTPS + installed to home screen + iOS 16.4+

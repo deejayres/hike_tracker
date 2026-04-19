@@ -13,18 +13,5 @@
       "type": "image/png",
       "purpose": "any"
     }
-  ],
-  "share_target": {
-    "action": "/hike_tracker/share-target",
-    "method": "POST",
-    "enctype": "multipart/form-data",
-    "params": {
-      "files": [
-        {
-          "name": "gpx",
-          "accept": ["application/gpx+xml", ".gpx", "application/octet-stream"]
-        }
-      ]
-    }
-  }
+  ]
 }
