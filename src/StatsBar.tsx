@@ -1,6 +1,7 @@
 import type { Trail } from './types'
 import { segmentDistance } from './geo'
 import geometries from './trailGeometries.json'
+import { supabase } from './supabase'
 
 const GEO = geometries as unknown as Record<string, [number, number][][]>
 
@@ -68,6 +69,9 @@ export default function StatsBar({ trails }: Props) {
         total={totalMiles}
         unit="mi"
       />
+      <button className="sign-out" onClick={() => supabase.auth.signOut()}>
+        Sign out
+      </button>
     </div>
   )
 }
