@@ -166,10 +166,11 @@ const REFERENCE_GPX = {
   '440': 'PF440__MST_excluding_shutin.gpx',
   '358B': 'PF358B__MountainstoSea_Connector.gpx',
   '617A': 'PF#617A__Sam_Knob_Summit.gpx',
+  '103': 'PF103_Buckhorn_Gap.gpx',
 }
 
 // Reference GPX files that should replace OSM geometry (when OSM is wrong)
-const REFERENCE_GPX_OVERRIDES = new Set(['356', '345'])
+const REFERENCE_GPX_OVERRIDES = new Set(['356', '345', '103'])
 
 // Manual overrides for trails where OSM name differs from our list
 // trailNumber -> OSM name to match against
