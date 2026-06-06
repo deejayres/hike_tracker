@@ -25,7 +25,10 @@ function haversine([lat1, lon1], [lat2, lon2]) {
 // Pisgah Ranger District bounding box: south, west, north, east
 const BBOX = '35.05,-83.1,35.65,-82.3'
 
-const OVERPASS_URL = 'https://overpass-api.de/api/interpreter'
+const OVERPASS_URLS = [
+  'https://overpass-api.de/api/interpreter',
+  'https://overpass.kumi.systems/api/interpreter',
+]
 
 // Our trail list (number -> name), matching trails.ts
 const TRAILS = [
@@ -188,6 +191,7 @@ const ALIASES = {
   '358A': 'Graveyard Upper Falls Trail',
   '349': 'Pounding Mill',
   '328': 'Bear Branch',
+  '606': 'Wash Creek',
 }
 
 function normalize(name) {
@@ -226,13 +230,21 @@ function matchTrail(osmName) {
 }
 
 async function fetchOverpass(query) {
-  const res = await fetch(OVERPASS_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: `data=${encodeURIComponent(query)}`,
-  })
-  if (!res.ok) throw new Error(`Overpass error: ${res.status}`)
-  return res.json()
+  for (const url of OVERPASS_URLS) {
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        // Overpass requires an identifying User-Agent; requests without one
+        // are rejected by their WAF (406) per their usage policy.
+        'User-Agent': 'hike_tracker/1.0 (Pisgah 400 trail geometry fetch; github.com/erinresso/hike_tracker)',
+      },
+      body: `data=${encodeURIComponent(query)}`,
+    })
+    if (res.ok) return res.json()
+    console.warn(`Overpass endpoint ${url} returned ${res.status}, trying next...`)
+  }
+  throw new Error('All Overpass endpoints failed')
 }
 
 async function main() {

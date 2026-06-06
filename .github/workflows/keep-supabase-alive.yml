@@ -2,15 +2,26 @@ name: Keep Supabase Alive
 
 on:
   schedule:
-    # Runs every 5 days at 08:00 UTC (well within the 7-day pause window)
-    - cron: '0 8 */5 * *'
+    - cron: '0 8 * * *'
   workflow_dispatch: # Allow manual trigger for testing
 
 jobs:
   ping:
     runs-on: ubuntu-latest
     steps:
-      - name: Upsert heartbeat row to prevent auto-pause
+      - name: Read from trail_states
+        run: |
+          response=$(curl -s -o /dev/null -w "%{http_code}" \
+            "${{ secrets.VITE_SUPABASE_URL }}/rest/v1/trail_states?limit=1" \
+            -H "apikey: ${{ secrets.VITE_SUPABASE_ANON_KEY }}" \
+            -H "Authorization: Bearer ${{ secrets.VITE_SUPABASE_ANON_KEY }}")
+          echo "HTTP status: $response"
+          if [ "$response" -ne 200 ]; then
+            echo "::error::Supabase read failed with status $response"
+            exit 1
+          fi
+          echo "Supabase read successful"
+      - name: Upsert heartbeat row
         run: |
           response=$(curl -s -o /dev/null -w "%{http_code}" \
             "${{ secrets.VITE_SUPABASE_URL }}/rest/v1/keep_alive?on_conflict=id" \
@@ -22,7 +33,7 @@ jobs:
             -d '{"id": 1, "pinged_at": "'"$(date -u +%Y-%m-%dT%H:%M:%SZ)"'"}')
           echo "HTTP status: $response"
           if [ "$response" -ne 200 ] && [ "$response" -ne 201 ]; then
-            echo "::error::Supabase heartbeat failed with status $response"
+            echo "::error::Supabase upsert failed with status $response"
             exit 1
           fi
-          echo "Supabase heartbeat successful"
+          echo "Supabase upsert successful"
